@@ -1,0 +1,5 @@
+import {
+  "moonbit-community/moonformdata",
+}
+
+pkgtype(kind: "executable")
