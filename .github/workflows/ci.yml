@@ -3,21 +3,45 @@ name: CI
 on:
   push:
   pull_request:
+  workflow_dispatch:
 
 jobs:
   moonbit:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - name: Setup MoonBit
-        uses: hustcer/setup-moonbit@v1
+      - uses: actions/checkout@v5
+
+      - name: Install MoonBit
+        run: |
+          curl -fsSL https://cli.moonbitlang.com/install/unix.sh | bash
+          echo "$HOME/.moon/bin" >> "$GITHUB_PATH"
+
+      - name: MoonBit version
+        run: moon version
+
       - name: Check
         run: moon check
+
       - name: Build
         run: moon build
+
       - name: Test
         run: moon test
-      - name: Run example
+
+      - name: Check JS target
+        run: moon check --target js
+
+      - name: Build JS target
+        run: moon build --target js
+
+      - name: Test JS target
+        run: moon test --target js
+
+      - name: Run CLI example
         run: moon run cmd/main
+
+      - name: Run basic example
+        run: moon run examples/basic
+
       - name: Package list
         run: moon package --list
