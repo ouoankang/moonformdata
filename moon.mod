@@ -9,13 +9,13 @@
 //   "moonbitlang/x@0.4.6",
 // }
 
-name = "moonbit-community/moonformdata"
+name = "ouoankang/moonformdata"
 
 version = "0.1.0"
 
 readme = "README.md"
 
-repository = "https://github.com/moonbit-community/moonformdata"
+repository = "https://github.com/ouoankang/moonformdata"
 
 license = "Apache-2.0"
 

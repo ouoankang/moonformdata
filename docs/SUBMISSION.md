@@ -4,9 +4,9 @@
 | --- | --- |
 | Project | MoonFormData |
 | Title | MoonFormData: MoonBit native multipart/form-data parser and encoder |
-| Package | `moonbit-community/moonformdata` |
+| Package | `ouoankang/moonformdata` |
 | Version | `0.1.0` |
-| Repository | `https://github.com/moonbit-community/moonformdata` |
+| Repository | `https://github.com/ouoankang/moonformdata` |
 | License | Apache-2.0 |
 | Project type | Original MoonBit open source library |
 | Main language | MoonBit |
@@ -57,7 +57,7 @@ moon package --list
 moon publish --dry-run
 ```
 
-`moon publish --dry-run` 和 `moon publish` 需要先执行 `moon login`，并确保登录账号有权限发布 `moonbit-community/moonformdata`。
+`moon publish --dry-run` 和 `moon publish` 需要先执行 `moon login`，并确保登录账号有权限发布 `ouoankang/moonformdata`。
 
 ## Open Source Compliance
 
