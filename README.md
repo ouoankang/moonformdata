@@ -15,11 +15,25 @@ Mooncakes 已有 `GCodinggo/moon-multipart` 和 `Songyz002/moon-multipart`，公
 
 项目为独立原创实现，不依赖、移植或复制上述包。完整对比见 [生态定位与差异](docs/ECOSYSTEM.md)。
 
+## 实用价值
+
+流式 multipart 库可以把字节拆成 part，但真实 API 还需要回答“这个端点允许哪些字段和文件”“升级后是否会拒绝旧客户端”“一批上传样例是否仍符合约定”“线上行为是否发生漂移”。MoonFormData 把这些分散逻辑收敛为可复用 API：
+
+| 工程阶段 | MoonFormData 提供的能力 |
+| --- | --- |
+| 请求接入 | 按路由选择 `UploadContract`，统一输出接受或拒绝原因 |
+| 版本升级 | 比较新旧契约，提前识别新增必填项、限额收紧和白名单缩小 |
+| 持续集成 | 批量运行正常、拒绝和损坏请求，校验错误码与风险等级 |
+| 长期维护 | 保存可读基线，检测用例删除、决策变化和错误码漂移 |
+
+因此项目可直接用于头像/附件上传、Webhook 签入、网关策略、HTTP 客户端测试和 Web 框架适配，而不是只展示格式解析。
+
 ## 质量状态
 
 | 项目 | 状态 |
 | --- | --- |
 | 包名与版本 | `ouoankang/moonformdata` `0.1.0` |
+| Mooncakes | [已发布，可直接安装](https://mooncakes.io/docs/ouoankang/moonformdata) |
 | 主要语言 | 核心功能全部使用 MoonBit 实现 |
 | 代码规模 | 9,000 行以上有效 MoonBit 代码 |
 | 自动测试 | 112 个，覆盖解析、错误、边界、安全、契约和治理流程 |

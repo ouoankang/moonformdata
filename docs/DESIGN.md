@@ -9,7 +9,7 @@ MoonFormData is a MoonBit native toolkit for parsing, generating, validating, in
 | Not included in v0.1.0 | Reason |
 | --- | --- |
 | Full HTTP server | The project is a reusable multipart library, not a Web framework. |
-| Streaming large-file parser | v0.1.0 uses a clear in-memory design that is easier to verify during the hackathon cycle. |
+| Streaming large-file parser | The bounded in-memory layer keeps application validation deterministic; byte streaming remains a separate transport concern. |
 | Recursive nested multipart parsing | The common engineering path is flat browser/API upload forms. |
 | Browser `FormData` compatibility matrix | The library focuses on interoperable multipart request bodies and MoonBit APIs. |
 | Storage, temporary files, or cloud upload adapters | Callers decide where parsed file bodies are stored. |

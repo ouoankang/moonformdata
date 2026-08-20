@@ -4,7 +4,7 @@
 | --- | --- |
 | 正式名称 | MoonFormData：MoonBit 原生 multipart/form-data 表单解析与生成库 |
 | GitHub | `https://github.com/ouoankang/moonformdata` |
-| Mooncakes | `ouoankang/moonformdata` `0.1.0` |
+| Mooncakes | `ouoankang/moonformdata` `0.1.0`，已发布并可安装 |
 | 项目性质 | 原创 MoonBit 开源项目 |
 | 许可证 | Apache-2.0 |
 | 主要语言 | MoonBit |
