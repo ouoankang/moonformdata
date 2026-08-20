@@ -2,31 +2,48 @@
 
 ## Independent Scope
 
-MoonFormData is an original MoonBit implementation for application-facing multipart upload contracts. Its primary output is an acceptance decision with schema issues, risk analysis, and deterministic diagnostics. It uses an in-memory `String` body model and does not implement streaming byte transport.
+MoonFormData is an original MoonBit implementation for application-facing multipart upload contracts and API governance. It uses a bounded in-memory `String` body model and does not implement streaming byte transport. Its primary output is an acceptance decision, compatibility report, conformance result, or reproducible baseline.
 
 ## Public Ecosystem Comparison
 
 | Project | Public focus | Primary integration layer |
 | --- | --- | --- |
-| MoonFormData | `UploadContract`, named field/file schema, unknown-entry policy, risk threshold, analysis reports, 84-fixture regression corpus | API endpoints, webhooks, gateways, and request-test tooling |
-| [`GCodinggo/moon-multipart`](https://github.com/GCodinggo/moon-multipart) | RFC 7578, byte-oriented streaming parser/writer, chunk boundary handling, transport safety limits | HTTP streaming and large-file transport |
-| [`Songyz002/moon-multipart`](https://mooncakes.io/docs/Songyz002/moon-multipart) | Mooncakes metadata describes an RFC 7578 streaming parser and generator | HTTP streaming |
+| MoonFormData | Named field/file schema, risk policy, contract version diff, conformance suites, endpoint catalog, persisted baseline, Markdown reports | API endpoints, webhooks, gateways, and request-test governance |
+| [`GCodinggo/moon-multipart`](https://github.com/GCodinggo/moon-multipart) | RFC 7578 byte-oriented streaming parser/writer, chunk-boundary handling, transport limits | HTTP streaming and large-file transport |
+| [`Songyz002/moon-multipart`](https://mooncakes.io/docs/Songyz002/moon-multipart) | RFC 7578 streaming parser and generator | HTTP streaming |
+| [`mizchi/js`](https://github.com/mizchi/js.mbt) FormData binding | JavaScript/Web API bindings for browser, Node.js, Deno, and edge runtimes | Platform FFI and Web-standard objects |
 
-The MoonFormData repository started on 2026-07-22. The Mooncakes registry records the first `Songyz002/moon-multipart` release on 2026-07-29 and the first `GCodinggo/moon-multipart` release on 2026-08-03. MoonFormData was designed and implemented independently; neither package is a dependency, source reference, or porting source.
+MoonFormData was designed and implemented independently. None of these projects is a dependency, source reference, fixture source, or porting source.
 
-## Functional Boundary
+## Clear Functional Difference
 
-MoonFormData deliberately does not duplicate streaming parsers. It focuses on the layer after a complete request body is available:
+The existing multipart packages solve the transport problem: incrementally read or write RFC-framed bytes. MoonFormData solves the application-contract lifecycle after a complete, bounded request body is available:
 
-- parse a bounded in-memory multipart body;
-- validate named fields and files against `FormSchema`;
-- reject unknown entries where an endpoint contract is closed;
-- enforce part, header, request, file, and field limits;
-- classify file and form risk;
-- combine parsing, schema validation, and risk ceilings through `UploadContract`;
-- emit stable reports for CI, API tests, webhook debugging, and acceptance evidence.
+- parse a request into an ordered field and file model;
+- validate named entries against a closed or open `FormSchema`;
+- enforce parser, field, file, type, extension, and risk limits;
+- produce an endpoint acceptance or rejection decision;
+- compare old and new contracts and classify breaking changes;
+- execute expected accept, reject, and parse-error cases in one suite;
+- register versioned contracts for multiple HTTP routes;
+- serialize observable behavior as a Git-friendly baseline;
+- detect removed coverage, changed decisions, new failures, and issue-code drift;
+- render deterministic text and Markdown reports for CI and review.
 
-Applications that require arbitrary binary `Bytes`, incremental parsing, or direct large-file streaming should use a streaming multipart package. Applications that need endpoint-level contract validation and deterministic diagnostics can use MoonFormData directly or place it above an HTTP adapter.
+This scope is complementary rather than interchangeable. Applications that require arbitrary binary `Bytes`, incremental parsing, or direct large-file streaming should use a streaming multipart package. Applications that need endpoint-level policy, compatibility checks, reproducible API tests, and stable diagnostics can use MoonFormData directly or place it above an HTTP/streaming adapter.
+
+## Differentiation Evidence
+
+The distinction is implemented and tested, not only described:
+
+| Capability | Implementation | Tests |
+| --- | --- | --- |
+| Endpoint decision runtime | `contract.mbt` | `contract_test.mbt` |
+| Breaking-change analysis | `evolution.mbt` | `evolution_test.mbt` |
+| Batch conformance runner | `conformance.mbt` | `conformance_test.mbt` |
+| Multi-endpoint catalog | `catalog.mbt` | `catalog_test.mbt` |
+| Persisted regression baseline | `baseline.mbt` | `baseline_test.mbt` |
+| End-to-end governance flow | `examples/governance` | GitHub Actions CI |
 
 ## Provenance and Compliance
 

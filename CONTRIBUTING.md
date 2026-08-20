@@ -12,6 +12,7 @@ moon check --deny-warn
 moon build
 moon test --deny-warn
 moon run examples/basic
+moon run examples/governance
 ```
 
 ## Before Opening a Pull Request
@@ -27,9 +28,9 @@ moon build --target js
 moon test --target js
 moon run cmd/main
 moon run examples/basic
+moon run examples/governance
 moon info
 moon package --list
-moon publish --dry-run
 ```
 
 ## Scope
@@ -39,6 +40,7 @@ Good contributions keep the library focused on reusable multipart behavior:
 - Parser correctness and edge cases.
 - Encoder interoperability.
 - Validation, schema, and upload contract helpers.
+- Contract evolution, conformance, catalog, and baseline workflows.
 - Security-oriented filename handling.
 - Examples that are small and reproducible.
 - Documentation that helps users integrate the package.

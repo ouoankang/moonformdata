@@ -1,51 +1,46 @@
-# Final Acceptance Evidence
+# MoonFormData 项目完成证据
 
-| Item | Value |
+| 项目 | 内容 |
 | --- | --- |
-| Project | MoonFormData |
-| Title | MoonFormData: MoonBit native multipart/form-data parser and encoder |
-| Package | `ouoankang/moonformdata` |
-| Version | `0.1.0` |
-| Repository | `https://github.com/ouoankang/moonformdata` |
-| License | Apache-2.0 |
-| Project type | Original MoonBit open source library |
-| Main language | MoonBit |
+| 正式名称 | MoonFormData：MoonBit 原生 multipart/form-data 表单解析与生成库 |
+| GitHub | `https://github.com/ouoankang/moonformdata` |
+| Mooncakes | `ouoankang/moonformdata` `0.1.0` |
+| 项目性质 | 原创 MoonBit 开源项目 |
+| 许可证 | Apache-2.0 |
+| 主要语言 | MoonBit |
+| 代码规模 | 9,000 行以上 MoonBit 代码 |
+| 自动测试 | 112 个 |
 
-## Scope
+## 完整功能
 
-MoonFormData implements an in-memory `multipart/form-data` parser and encoder with application-facing upload contracts. Completed capabilities include boundary and header parsing, repeated fields, file uploads, filename sanitization, request builders, declarative schemas, risk analysis, endpoint decisions, deterministic reports, examples, tests, and CI.
+MoonFormData 已实现有界内存版 multipart parser/encoder、字段与文件查询、文件名安全处理、通用校验策略、命名 Schema、风险分析和上传接受/拒绝决策。在此基础上，项目已形成完整的上传契约治理工具链：
 
-## Existing Foundation
+- 契约版本兼容性检查与破坏性变更分级；
+- 接受、拒绝、解析失败、错误码和风险等级一致性套件；
+- 按 HTTP 方法与路径组织的多端点版本化契约目录；
+- 可序列化、可解析、适合 Git diff 的行为回归基线；
+- 稳定文本、Markdown 报告和三个可运行示例。
 
-The repository contains a complete MoonBit module, public package metadata, Apache-2.0 license, runnable examples, CI configuration, API documentation, testing documentation, design documentation, ecosystem comparison, 84 regression fixtures, authorship records, and a concise Markdown proposal.
+## 生态差异
 
-## Technical Route
+Mooncakes 中 `GCodinggo/moon-multipart` 与 `Songyz002/moon-multipart` 的公开定位侧重 RFC 7578 字节流 parser/writer 和大文件传输。MoonFormData 的核心价值位于应用层：命名 Schema、风险策略、端点决策、API 版本差异、批量一致性、多端点目录和回归基线。项目不依赖、移植或复制上述包，详细证据见 `docs/ECOSYSTEM.md`。
 
-| Area | Route |
+## 工程证据
+
+| 证据 | 位置 |
 | --- | --- |
-| Parsing | Validate boundary, split multipart sections, parse part headers, parse `Content-Disposition`, preserve ordered parts. |
-| Encoding | Build deterministic multipart payloads from text and file parts, sanitize filenames, emit HTTP-ready content type. |
-| Validation | Provide general policy checks and named schema rules for upload endpoints. |
-| Safety | Normalize filenames and reject malformed headers, invalid boundaries, broken bodies, and limit violations. |
-| Contract | Combine parse limits, schema rules, and risk ceilings into one acceptance decision and report. |
-| Quality | Use blackbox tests for public behavior and whitebox tests for helper invariants. |
+| parser、encoder 与错误模型 | `moonformdata.mbt` |
+| Schema、分析与上传契约 | `schema.mbt`、`analysis.mbt`、`contract.mbt` |
+| 契约演进、一致性、目录与基线 | `evolution.mbt`、`conformance.mbt`、`catalog.mbt`、`baseline.mbt` |
+| 84 组回归语料 | `regression_corpus.mbt` |
+| 112 个测试 | 根目录 `*_test.mbt` 与 `*_wbtest.mbt` |
+| 三个运行入口 | `cmd/main`、`examples/basic`、`examples/governance` |
+| API、设计、测试和生态文档 | `docs/` |
+| 持续集成 | `.github/workflows/ci.yml` |
+| 公开接口快照 | `pkg.generated.mbti` |
+| 作者与提交身份 | `AUTHORS.md` |
 
-## Deliverables
-
-| Deliverable | Location |
-| --- | --- |
-| Core implementation | Root `.mbt` source files |
-| CLI example | `cmd/main` |
-| Minimal example | `examples/basic` |
-| API documentation | `docs/API.md` |
-| Test documentation | `docs/TESTING.md` |
-| Design notes | `docs/DESIGN.md` |
-| Markdown proposal | `submission/MoonFormData_Project_Proposal.md` |
-| Ecosystem comparison | `docs/ECOSYSTEM.md` |
-| Commit identity | `AUTHORS.md` |
-| CI | `.github/workflows/ci.yml` |
-
-## Verification Commands
+## 复现命令
 
 ```bash
 moon fmt --check
@@ -57,13 +52,11 @@ moon build --target js
 moon test --target js
 moon run cmd/main
 moon run examples/basic
+moon run examples/governance
 moon info
 moon package --list
-moon publish --dry-run
 ```
 
-`moon publish --dry-run` 和 `moon publish` 需要先执行 `moon login`，并确保登录账号有权限发布 `ouoankang/moonformdata`。
+## 开源合规
 
-## Open Source Compliance
-
-MoonFormData is an original MoonBit implementation under Apache-2.0. It does not copy or port code from existing multipart packages or any private, closed-source, or unclear source. Behavior is designed from public multipart specifications and common HTTP upload practices. Synthetic fixtures and regression data are owned by this project.
+项目采用 OSI 认可的 Apache-2.0 许可证。格式与行为边界来自 RFC 7578、RFC 2046 和 RFC 8187 等公开规范；代码、测试、示例和 fixture 均为原创或项目自有合成内容，不包含来源不明、私有、闭源或商业代码。

@@ -1,46 +1,38 @@
 # MoonFormData
 
-MoonFormData 是一个 MoonBit 原生 `multipart/form-data` 表单解析与生成库，重点提供上传契约、声明式 Schema、安全校验和可复现诊断报告，面向文件上传、Webhook、API 测试、轻量网关和 Web 框架集成。
+MoonFormData 是一个 MoonBit 原生 `multipart/form-data` 表单解析、生成与上传契约治理工具包。它面向文件上传端点、Webhook、轻量网关、HTTP 客户端和 API 回归测试，把 multipart 请求转换为可校验、可演进、可追踪的应用层契约。
 
-## 项目目标
+## 生态定位
 
-MoonFormData 把 multipart 解析、生成、字段查询、文件名治理、Schema 校验和风险分析组合成可执行的上传契约。项目不绑定具体 HTTP server 或 Web 框架，适合作为 MoonBit API 端点、Webhook 和自动化测试的请求验收层。
+Mooncakes 已有 `GCodinggo/moon-multipart` 和 `Songyz002/moon-multipart`，公开定位主要是 RFC 7578 字节流 parser/writer 与大文件传输。MoonFormData 不重复流式传输层，而是覆盖完整请求体进入应用后的治理流程。
 
-## 当前状态
+| 能力层 | MoonFormData | 现有 `moon-multipart` 公开定位 |
+| --- | --- | --- |
+| 数据处理 | 有界内存请求体、结构化字段与文件模型 | `Bytes`、分块事件、流式 writer |
+| 端点规则 | 命名 Schema、未知项策略、风险阈值、接受/拒绝决策 | RFC framing 与传输限制 |
+| API 演进 | 契约版本差异、破坏性变更分级 | 未作为主要能力公开 |
+| 回归治理 | 批量一致性套件、多端点目录、可保存基线、Markdown 报告 | 未作为主要能力公开 |
+
+项目为独立原创实现，不依赖、移植或复制上述包。完整对比见 [生态定位与差异](docs/ECOSYSTEM.md)。
+
+## 质量状态
 
 | 项目 | 状态 |
 | --- | --- |
-| 包名 | `ouoankang/moonformdata` |
-| 版本 | `0.1.0` |
-| MoonBit 实现 | 核心功能均由 MoonBit 实现 |
-| 代码规模 | 有效 MoonBit 代码超过 6000 行 |
-| 测试 | 81 个测试，覆盖核心路径、错误路径、边界情况、上传契约和白盒 helper |
-| 示例 | `cmd/main` 和 `examples/basic` 均可运行 |
-| CI | GitHub Actions 覆盖检查、构建、测试、JS 目标、示例和包清单检查 |
+| 包名与版本 | `ouoankang/moonformdata` `0.1.0` |
+| 主要语言 | 核心功能全部使用 MoonBit 实现 |
+| 代码规模 | 9,000 行以上有效 MoonBit 代码 |
+| 自动测试 | 112 个，覆盖解析、错误、边界、安全、契约和治理流程 |
+| 回归语料 | 84 组项目自有合成 multipart fixture |
+| 示例 | `cmd/main`、`examples/basic`、`examples/governance` |
+| CI | 格式、零警告检查、构建、测试、JS 目标、接口漂移和示例 |
 | 许可证 | Apache-2.0 |
 
-## 生态定位与差异
-
-Mooncakes 中已有 `GCodinggo/moon-multipart` 和 `Songyz002/moon-multipart`，其公开包元数据与 README 聚焦 RFC 7578、字节数据和流式 parser/writer。MoonFormData 不与它们竞争大文件流式处理，而是提供应用层的 multipart 上传契约与质量诊断。
-
-| 维度 | MoonFormData | 现有 `moon-multipart` 公开定位 |
-| --- | --- | --- |
-| 核心输入 | 内存请求体与端点 Schema | 字节流与 multipart 分块 |
-| 核心交付 | `UploadContract`、验收决策、稳定诊断报告 | 流式解析事件和 writer |
-| 应用校验 | 命名字段/文件规则、未知项拒绝、风险阈值 | 传输层限制和 RFC 校验 |
-| 回归能力 | 84 组语料、默认/JS 双目标、可复现报告 | 流式边界与安全用例 |
-
-两类项目面向不同集成层。MoonFormData 不依赖、移植或复制这些项目的代码，详细说明见 [生态差异](docs/ECOSYSTEM.md)。
-
 ## 安装
-
-Mooncakes 包名：
 
 ```bash
 moon add ouoankang/moonformdata
 ```
-
-在 `moon.pkg` 中引用：
 
 ```moonbit
 import {
@@ -48,7 +40,7 @@ import {
 }
 ```
 
-## 最小示例
+## 解析示例
 
 ```moonbit
 let body =
@@ -56,18 +48,10 @@ let body =
   "Content-Disposition: form-data; name=\"title\"\r\n" +
   "\r\n" +
   "MoonFormData\r\n" +
-  "--demo\r\n" +
-  "Content-Disposition: form-data; name=\"upload\"; filename=\"..\\\\report.txt\"\r\n" +
-  "Content-Type: text/plain\r\n" +
-  "\r\n" +
-  "hello from MoonBit\r\n" +
   "--demo--\r\n"
 
 match @moonformdata.parse_multipart(body, "demo") {
-  Ok(form) => {
-    println(form.require_field("title").unwrap())
-    println(form.require_file("upload").unwrap().filename_or("<none>"))
-  }
+  Ok(form) => println(form.require_field("title").unwrap())
   Err(err) => println(err.message())
 }
 ```
@@ -92,85 +76,81 @@ match @moonformdata.inspect_upload_request(request, contract) {
 }
 ```
 
-## 运行示例
+## 契约治理示例
+
+```moonbit
+let diff = @moonformdata.compare_upload_contracts(v1_contract, v2_contract)
+println(diff.summary())
+
+let suite = @moonformdata.run_conformance_suite("avatar-v2", v2_contract, cases)
+let baseline = @moonformdata.conformance_baseline(suite)
+println(baseline.to_text())
+```
+
+完整示例同时演示契约差异、批量用例、多端点目录和基线比较：
 
 ```bash
 moon run cmd/main
 moon run examples/basic
+moon run examples/governance
 ```
-
-`examples/basic` 会演示生成上传请求、解析请求、读取字段和文件、执行 schema 校验、输出分析摘要。
 
 ## 主要功能
 
-- 解析 `Content-Type: multipart/form-data; boundary=...`
-- 解析 `Content-Disposition`、`name`、`filename`、`filename*` 和 part headers
-- 解析普通字段、重复字段、同名多文件、空文件和自定义 header
-- 生成 HTTP-ready multipart body 和 `Content-Type`
-- 提供 `MultipartForm` 查询 API
-- 提供安全文件名处理，降低路径穿越、控制字符和危险扩展名风险
-- 提供通用 `ValidationPolicy` 和声明式 `FormSchema`
-- 提供 `FormAnalysis`，用于 CLI、日志、Webhook 调试和验收报告
-- 提供 `UploadContract` 与 `UploadInspection`，统一执行解析限制、Schema、风险阈值和验收决策
-- 提供回归 fixture、黑盒测试、白盒测试和 JS 目标测试
+- 解析 `Content-Type` boundary、`Content-Disposition`、part headers、`filename` 与 `filename*`
+- 支持普通字段、重复字段、同名多文件、空文件、自定义 header、CRLF 与 LF-only 请求体
+- 生成 HTTP-ready multipart body，并提供字段、文件和 Builder API
+- 安全处理路径分隔符、盘符、控制字符、危险扩展名和超长文件名
+- 使用 `ValidationPolicy` 与 `FormSchema` 校验必填项、数量、大小、类型、扩展名和未知项
+- 使用 `UploadContract` 组合解析限制、Schema、风险阈值和端点决策
+- 比较新旧契约，识别新增必填项、收紧限额、白名单缩小等破坏性变更
+- 运行接受、拒绝、解析失败、错误码和风险等级一致性用例
+- 按 HTTP 方法和路径管理多端点契约并生成一致性矩阵
+- 序列化回归基线，检测用例删除、结果变化、失败回归和错误码漂移
+- 输出稳定文本和 Markdown 报告，适合 CI、评审、Webhook 调试与 API 升级
 
 ## API 概览
 
-| 分类 | API |
+| 分类 | 主要 API |
 | --- | --- |
 | 解析 | `boundary_from_content_type`, `parse_multipart`, `parse_multipart_with_options`, `parse_multipart_request` |
-| 生成 | `encode_multipart`, `encode_fields`, `encode_files`, `encode_fields_and_files`, `build_upload_request` |
-| Part 构造 | `text_part`, `file_part`, `empty_file_part`, `part_add_header`, `part_replace_header` |
-| 查询 | `field_value`, `field_values`, `files`, `require_field`, `require_file`, `summary`, `debug_lines` |
-| 安全 | `safe_filename`, `sanitize_filename_with_policy`, `strict_filename_policy`, `image_filename_policy` |
-| 校验 | `validate_form`, `default_validation_policy`, `strict_validation_policy`, `validate_form_schema`, `field_rule`, `file_rule` |
-| 分析 | `analyze_form`, `analyze_request`, `request_analysis_lines`, `form_name_counts`, `form_content_type_counts` |
+| 生成 | `encode_multipart`, `encode_fields_and_files`, `build_upload_request` |
+| 查询 | `field_value`, `field_values`, `files`, `require_field`, `require_file`, `summary` |
+| 安全 | `safe_filename`, `sanitize_filename_with_policy`, `strict_filename_policy` |
+| 校验 | `validate_form`, `validate_form_schema`, `field_rule`, `file_rule` |
+| 分析 | `analyze_form`, `FormAnalysis::to_lines`, `form_content_type_counts` |
 | 上传契约 | `upload_contract`, `inspect_upload`, `inspect_upload_request`, `UploadInspection::decision_line` |
+| 契约演进 | `compare_upload_contracts`, `ContractDiff::has_breaking_changes`, `ContractDiff::to_markdown` |
+| 一致性套件 | `upload_conformance_case`, `run_conformance_suite`, `ConformanceSuiteResult::to_markdown` |
+| 多端点目录 | `upload_endpoint`, `upload_contract_catalog`, `inspect_route`, `run_catalog_conformance` |
+| 回归基线 | `conformance_baseline`, `parse_conformance_baseline`, `compare_conformance_baseline` |
 
-完整 API 见 [docs/API.md](docs/API.md)。
+完整接口见 [API 文档](docs/API.md)。
 
-## 支持范围
+## 支持边界
 
-- 以 MoonBit `String` 为载体的内存版 multipart body 解析
-- CRLF 和 LF-only 换行
-- 普通文本字段
-- 重复字段
-- 文件字段
-- 同名多文件
-- 空文件
-- 自定义 part header
-- `filename` 和常见 `filename*` 百分号编码
-- 可配置解析限制
-- 可配置上传校验
-- 可组合解析限制、Schema 和风险阈值的端点上传契约
-- 可运行示例和回归测试
+支持：
 
-## 暂不支持范围
+- 以 MoonBit `String` 为载体的有界内存请求体
+- 平面 multipart 表单、文本字段与文件字段
+- 默认目标与 JS 目标
+- 应用层 Schema、风险分析、契约演进和回归治理
+
+不支持：
 
 - 完整 HTTP server
-- 流式大文件解析
-- 任意二进制字节流 API；大文件或原始 `Bytes` 场景应使用流式 multipart 库
+- 任意二进制 `Bytes` 的流式大文件传输
 - 复杂嵌套 multipart 递归解析
+- 文件落盘、对象存储和云上传适配器
 - 浏览器 `FormData` 全量兼容矩阵
-- 文件落盘、对象存储或云上传适配器
 
-## 错误处理
+需要分块读取或大文件直传时，应选用流式 multipart 包；需要端点级验收、API 兼容性和稳定诊断时，可直接使用 MoonFormData，或把它放在 HTTP 适配层之后。
 
-所有可能失败的 API 返回 `Result[..., MultipartError]`。错误类型包括：
+## 错误模型
 
-| 错误 | 含义 |
-| --- | --- |
-| `MissingBoundary` | 缺少 boundary |
-| `InvalidBoundary` | boundary 为空、过长或包含非法字符 |
-| `InvalidHeader` | part header 格式非法 |
-| `InvalidContentType` | Content-Type 不是合法 multipart/form-data |
-| `InvalidContentDisposition` | Content-Disposition 缺失或非法 |
-| `MalformedBody` | 请求体边界、分隔符或结束边界错误 |
-| `LimitExceeded` | 超过解析限制 |
+所有可能失败的解析 API 返回 `Result[..., MultipartError]`，可区分缺少 boundary、非法 header、非法 Content-Type、非法 Content-Disposition、损坏 body 和超过限制。目录路由与基线格式另有结构化错误类型，便于生成 HTTP 响应、日志或 CI 失败信息。
 
-可使用 `err.message()` 生成日志、CLI 输出或 HTTP 400 响应文本。
-
-## 测试和验收命令
+## 开发质量
 
 ```bash
 moon fmt --check
@@ -182,14 +162,10 @@ moon build --target js
 moon test --target js
 moon run cmd/main
 moon run examples/basic
+moon run examples/governance
 moon info
 moon package --list
-moon publish --dry-run
 ```
-
-`moon publish --dry-run` 需要先完成 `moon login`，用于正式发布前的 Mooncakes 打包与发布流程检查。
-
-详细测试说明见 [docs/TESTING.md](docs/TESTING.md)。
 
 ## 文档
 
@@ -197,9 +173,9 @@ moon publish --dry-run
 - [设计说明](docs/DESIGN.md)
 - [测试说明](docs/TESTING.md)
 - [生态定位与差异](docs/ECOSYSTEM.md)
-- [提交说明](docs/SUBMISSION.md)
-- [作者与提交身份说明](AUTHORS.md)
+- [项目完成证据](docs/SUBMISSION.md)
+- [作者与提交身份](AUTHORS.md)
 
-## 开源许可证
+## 开源合规
 
-本项目采用 Apache-2.0 许可证。项目为原创 MoonBit 实现，不直接复制或移植其他语言项目代码。行为设计参考公开的 multipart/form-data、MIME multipart、Content-Disposition 和 HTTP header 参数相关规范。
+MoonFormData 采用 Apache-2.0 许可证。实现仅以 RFC 7578、RFC 2046、RFC 8187 等公开规范作为格式与行为依据；代码、示例、fixture 与测试均为项目原创或项目自有合成内容，不包含来源不明、私有或闭源代码。

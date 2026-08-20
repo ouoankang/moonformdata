@@ -1,6 +1,6 @@
 # MoonFormData API
 
-MoonFormData provides an in-memory `multipart/form-data` parser, encoder, query layer, validation layer, upload contract, and analysis helpers for MoonBit HTTP tooling.
+MoonFormData provides an in-memory `multipart/form-data` parser, encoder, validation layer, upload contract runtime, compatibility analyzer, conformance suite, endpoint catalog, and persisted regression baseline for MoonBit HTTP tooling.
 
 ## Core Types
 
@@ -18,6 +18,12 @@ MoonFormData provides an in-memory `multipart/form-data` parser, encoder, query 
 | `FormAnalysis` | Structured summary of fields, files, headers, content types, and risk notes. |
 | `UploadContract` | Parser limits, named form schema, and accepted risk ceiling for one endpoint. |
 | `UploadInspection` | Parsed form, validation report, analysis, and final acceptance decision. |
+| `ContractDiff` | Ordered compatibility changes between two upload contract versions. |
+| `UploadConformanceCase` | One request with expected decision, issue codes, and risk. |
+| `ConformanceSuiteResult` | Aggregate result and deterministic report for a request batch. |
+| `UploadContractCatalog` | Versioned contracts indexed by endpoint ID and HTTP route. |
+| `ConformanceBaseline` | Stable, serializable behavior snapshot for one suite. |
+| `BaselineDiff` | Added, removed, changed, and regressed suite behavior. |
 
 ## Parsing
 
@@ -116,6 +122,52 @@ MoonFormData provides an in-memory `multipart/form-data` parser, encoder, query 
 | `form_content_type_counts(form)` | Count file content types. |
 | `detect_boundary_in_part_bodies(form)` | Detect active boundary markers inside parsed part bodies. |
 
+## Contract Evolution
+
+| API | Description |
+| --- | --- |
+| `compare_upload_contracts(previous, current)` | Compare parser limits, risk ceiling, schema flags, field rules, and file rules. |
+| `ContractDiff::has_breaking_changes()` | Whether an existing accepted request may now be rejected. |
+| `ContractDiff::highest_impact()` | Highest compatibility impact in the report. |
+| `ContractDiff::to_lines()` | Stable text output for CI and logs. |
+| `ContractDiff::to_markdown()` | Review-friendly compatibility table. |
+
+The analyzer marks new required entries, tightened limits, closed unknown-entry policies, narrower allowlists, and stricter risk ceilings as breaking changes. Relaxed constraints and expanded allowlists are compatible changes.
+
+## Conformance Suites
+
+| API | Description |
+| --- | --- |
+| `upload_conformance_case(name, request, expectation)` | Create a case from `MultipartRequest`. |
+| `raw_upload_conformance_case(...)` | Create a case from raw Content-Type and body values. |
+| `UploadConformanceCase::require_issue_code(code)` | Require a schema issue in the observed result. |
+| `UploadConformanceCase::with_expected_risk(risk)` | Require a specific analysis risk. |
+| `run_conformance_suite(name, contract, cases)` | Execute a deterministic case batch. |
+| `ConformanceSuiteResult::failed_cases()` | Return only failed cases. |
+| `ConformanceSuiteResult::to_markdown()` | Render a CI or review report. |
+
+## Endpoint Catalog
+
+| API | Description |
+| --- | --- |
+| `upload_endpoint(id, method, path, version, contract)` | Validate and create a versioned endpoint entry. |
+| `upload_contract_catalog()` | Create an empty immutable-style catalog. |
+| `UploadContractCatalog::add(endpoint)` | Add an endpoint while rejecting duplicate IDs and routes. |
+| `UploadContractCatalog::inspect_route(method, path, request)` | Route and inspect one upload request. |
+| `endpoint_conformance_plan(endpoint_id, suite_name, cases)` | Assign a suite to one endpoint. |
+| `run_catalog_conformance(name, catalog, plans)` | Execute a multi-endpoint conformance matrix. |
+
+## Regression Baselines
+
+| API | Description |
+| --- | --- |
+| `conformance_baseline(suite)` | Capture observable case outcomes and issue codes. |
+| `ConformanceBaseline::to_text()` | Serialize a stable line-oriented baseline. |
+| `parse_conformance_baseline(source)` | Parse and validate a stored baseline. |
+| `compare_conformance_baseline(previous, current)` | Detect removed coverage, result changes, failures, and issue-code drift. |
+| `BaselineDiff::has_regressions()` | Whether current behavior contains a regression. |
+| `BaselineDiff::to_markdown()` | Render a behavior-diff report. |
+
 ## Error Model
 
 All fallible APIs return `Result[..., MultipartError]`.
@@ -129,3 +181,5 @@ All fallible APIs return `Result[..., MultipartError]`.
 | `InvalidContentDisposition(value)` | Part disposition is invalid or missing required fields. |
 | `MalformedBody(value)` | Body framing, separators, or closing boundary are invalid. |
 | `LimitExceeded(value)` | Parser options rejected body size, part count, or header count. |
+
+Catalog routing and baseline parsing expose separate structured errors through `CatalogError`, `CatalogInspectionError`, and `BaselineError`.

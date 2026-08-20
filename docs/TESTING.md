@@ -14,12 +14,10 @@ moon build --target js
 moon test --target js
 moon run cmd/main
 moon run examples/basic
+moon run examples/governance
 moon info
 moon package --list
-moon publish --dry-run
 ```
-
-`moon publish --dry-run` requires `moon login` because the MoonBit toolchain reads Mooncakes credentials before running the publish command.
 
 ## Coverage Map
 
@@ -35,8 +33,12 @@ moon publish --dry-run
 | Declarative schema validation | `schema_test.mbt` |
 | Analysis and reporting helpers | `analysis_test.mbt` |
 | Upload contracts and acceptance decisions | `contract_test.mbt` |
+| Contract compatibility and breaking changes | `evolution_test.mbt` |
+| Request conformance suites and reports | `conformance_test.mbt` |
+| Endpoint catalog and conformance matrix | `catalog_test.mbt` |
+| Persisted baselines and behavior diffs | `baseline_test.mbt` |
 | Whitebox helper invariants | `moonformdata_wbtest.mbt` |
-| Runnable examples | `cmd/main`, `examples/basic` |
+| Runnable examples | `cmd/main`, `examples/basic`, `examples/governance` |
 
 ## Regression Corpus
 
@@ -44,8 +46,8 @@ moon publish --dry-run
 
 ## Test Count
 
-The current suite contains 81 tests. It covers normal paths, malformed headers, missing boundaries, repeated fields, empty files, parser limits, schema validation, upload contracts, risk thresholds, helper formatting, JS target compatibility, and runnable examples.
+The current suite contains 112 tests. It covers normal paths, malformed headers, missing boundaries, repeated fields, empty files, parser limits, schema validation, upload contracts, risk thresholds, contract evolution, conformance cases, endpoint routing, baseline serialization, behavior regression detection, helper formatting, and JS target compatibility.
 
 ## CI
 
-GitHub Actions runs public checks on push, pull request, and manual dispatch. The CI job installs MoonBit, verifies formatting, runs zero-warning checks, builds both default and JS targets, runs tests and examples, verifies generated public interfaces, and lists the publish package. The publish dry run is a local release command after `moon login`.
+GitHub Actions runs public checks on push, pull request, and manual dispatch. The CI job installs MoonBit, verifies formatting, runs zero-warning checks, builds both default and JS targets, runs all three examples, verifies generated public interfaces, and lists the package contents.

@@ -30,6 +30,12 @@ pub fn collect_file_names(MultipartForm) -> Array[String]
 
 pub fn collect_text_pairs(MultipartForm) -> Array[(String, String)]
 
+pub fn compare_conformance_baseline(ConformanceBaseline, ConformanceSuiteResult) -> BaselineDiff
+
+pub fn compare_upload_contracts(UploadContract, UploadContract) -> ContractDiff
+
+pub fn conformance_baseline(ConformanceSuiteResult) -> ConformanceBaseline
+
 pub fn count_by_name(Array[String]) -> Array[NameCount]
 
 pub fn decode_percent_ascii(String) -> Result[String, MultipartError]
@@ -59,6 +65,8 @@ pub fn encode_multipart(Array[FormPart], boundary? : String) -> Result[EncodedFo
 pub fn encode_rfc5987_value(String) -> String
 
 pub fn encoded_to_request(EncodedForm) -> MultipartRequest
+
+pub fn endpoint_conformance_plan(String, String, Array[UploadConformanceCase]) -> EndpointConformancePlan
 
 pub fn field_rule(String) -> FieldRule
 
@@ -144,6 +152,8 @@ pub fn parse_and_validate_request(String, String, ValidationPolicy) -> Result[Pa
 
 pub fn parse_and_validate_schema_request(String, String, FormSchema) -> Result[ParseAndValidateResult, MultipartError]
 
+pub fn parse_conformance_baseline(String) -> Result[ConformanceBaseline, BaselineError]
+
 pub fn parse_content_disposition_header(String) -> Result[ContentDisposition, MultipartError]
 
 pub fn parse_fixture(MultipartFixture) -> Result[MultipartForm, MultipartError]
@@ -179,6 +189,8 @@ pub fn part_without_filename(FormPart) -> FormPart
 pub fn percent_encode_header_value(String) -> String
 
 pub fn quote_header_value(String) -> String
+
+pub fn raw_upload_conformance_case(String, String, String, ConformanceExpectation) -> UploadConformanceCase
 
 pub fn regression_fixture_count() -> Int
 
@@ -216,6 +228,10 @@ pub fn required_file_rule(String) -> FileRule
 
 pub fn roundtrip_request(MultipartRequest) -> Result[MultipartForm, MultipartError]
 
+pub fn run_catalog_conformance(String, UploadContractCatalog, Array[EndpointConformancePlan]) -> CatalogConformanceReport
+
+pub fn run_conformance_suite(String, UploadContract, Array[UploadConformanceCase]) -> ConformanceSuiteResult
+
 pub fn safe_filename(String) -> String
 
 pub fn sanitize_filename_with_policy(String, FilenamePolicy) -> String
@@ -234,7 +250,13 @@ pub fn text_file_spec(String, String, String) -> FileSpec
 
 pub fn text_part(String, String) -> FormPart
 
+pub fn upload_conformance_case(String, MultipartRequest, ConformanceExpectation) -> UploadConformanceCase
+
 pub fn upload_contract(FormSchema) -> UploadContract
+
+pub fn upload_contract_catalog() -> UploadContractCatalog
+
+pub fn upload_endpoint(String, String, String, String, UploadContract) -> Result[UploadEndpoint, CatalogError]
 
 pub fn upload_risk_at_most(UploadRisk, UploadRisk) -> Bool
 
@@ -257,6 +279,57 @@ pub fn webhook_summary(String, String) -> Result[String, MultipartError]
 // Errors
 
 // Types and methods
+pub(all) struct BaselineChange {
+  impact : BaselineChangeImpact
+  kind : BaselineChangeKind
+  case_name : String
+  before : String
+  after : String
+} derive(Eq, @debug.Debug)
+pub fn BaselineChange::to_line(Self) -> String
+
+pub(all) enum BaselineChangeImpact {
+  BaselineCompatible
+  BaselineReview
+  BaselineRegression
+} derive(Eq, @debug.Debug)
+pub fn BaselineChangeImpact::label(Self) -> String
+
+pub(all) enum BaselineChangeKind {
+  BaselineSuiteRenamed
+  BaselineCaseAdded
+  BaselineCaseRemoved
+  BaselineExpectationChanged
+  BaselineActualChanged
+  BaselinePassStatusChanged
+  BaselineIssueCodesChanged
+} derive(Eq, @debug.Debug)
+pub fn BaselineChangeKind::label(Self) -> String
+
+pub(all) struct BaselineDiff {
+  suite_name : String
+  changes : Array[BaselineChange]
+} derive(Eq, @debug.Debug)
+pub fn BaselineDiff::compatible_count(Self) -> Int
+pub fn BaselineDiff::has_regressions(Self) -> Bool
+pub fn BaselineDiff::is_unchanged(Self) -> Bool
+pub fn BaselineDiff::regression_count(Self) -> Int
+pub fn BaselineDiff::review_count(Self) -> Int
+pub fn BaselineDiff::summary(Self) -> String
+pub fn BaselineDiff::to_lines(Self) -> Array[String]
+pub fn BaselineDiff::to_markdown(Self) -> String
+
+pub(all) enum BaselineError {
+  InvalidBaselineHeader(String)
+  MissingBaselineSuite
+  InvalidBaselineLine(String)
+  InvalidBaselineExpectation(String)
+  InvalidBaselineActual(String)
+  InvalidBaselineStatus(String)
+  InvalidBaselineEscape(String)
+} derive(Eq, @debug.Debug)
+pub fn BaselineError::message(Self) -> String
+
 pub(all) enum BodySizeClass {
   EmptyBody
   TinyBody
@@ -266,6 +339,93 @@ pub(all) enum BodySizeClass {
 } derive(Eq, @debug.Debug)
 pub fn BodySizeClass::label(Self) -> String
 
+pub(all) struct CatalogConformanceReport {
+  catalog_name : String
+  suites : Array[ConformanceSuiteResult]
+  issues : Array[String]
+} derive(Eq, @debug.Debug)
+pub fn CatalogConformanceReport::case_count(Self) -> Int
+pub fn CatalogConformanceReport::failed_count(Self) -> Int
+pub fn CatalogConformanceReport::is_ok(Self) -> Bool
+pub fn CatalogConformanceReport::passed_count(Self) -> Int
+pub fn CatalogConformanceReport::summary(Self) -> String
+pub fn CatalogConformanceReport::to_markdown(Self) -> String
+
+pub(all) enum CatalogError {
+  InvalidEndpointId(String)
+  InvalidEndpointMethod(String)
+  InvalidEndpointPath(String)
+  InvalidEndpointVersion(String)
+  DuplicateEndpointId(String)
+  DuplicateEndpointRoute(String)
+  EndpointNotFound(String)
+} derive(Eq, @debug.Debug)
+pub fn CatalogError::message(Self) -> String
+
+pub(all) struct CatalogInspection {
+  endpoint_id : String
+  endpoint_version : String
+  inspection : UploadInspection
+} derive(Eq, @debug.Debug)
+pub fn CatalogInspection::decision_line(Self) -> String
+
+pub(all) enum CatalogInspectionError {
+  CatalogRoutingError(CatalogError)
+  CatalogUploadError(MultipartError)
+} derive(Eq, @debug.Debug)
+pub fn CatalogInspectionError::message(Self) -> String
+
+pub(all) enum ConformanceActual {
+  ActualAccepted
+  ActualRejected
+  ActualParseError
+} derive(Eq, @debug.Debug)
+pub fn ConformanceActual::label(Self) -> String
+
+pub(all) struct ConformanceBaseline {
+  suite_name : String
+  entries : Array[ConformanceBaselineEntry]
+} derive(Eq, @debug.Debug)
+pub fn ConformanceBaseline::to_text(Self) -> String
+
+pub(all) struct ConformanceBaselineEntry {
+  name : String
+  expectation : ConformanceExpectation
+  actual : ConformanceActual
+  passed : Bool
+  issue_codes : Array[String]
+} derive(Eq, @debug.Debug)
+
+pub(all) struct ConformanceCaseResult {
+  name : String
+  expectation : ConformanceExpectation
+  actual : ConformanceActual
+  passed : Bool
+  issue_codes : Array[String]
+  details : Array[String]
+} derive(Eq, @debug.Debug)
+pub fn ConformanceCaseResult::status_label(Self) -> String
+pub fn ConformanceCaseResult::to_line(Self) -> String
+
+pub(all) enum ConformanceExpectation {
+  ExpectAccepted
+  ExpectRejected
+  ExpectParseError
+} derive(Eq, @debug.Debug)
+pub fn ConformanceExpectation::label(Self) -> String
+
+pub(all) struct ConformanceSuiteResult {
+  name : String
+  cases : Array[ConformanceCaseResult]
+} derive(Eq, @debug.Debug)
+pub fn ConformanceSuiteResult::failed_cases(Self) -> Array[ConformanceCaseResult]
+pub fn ConformanceSuiteResult::failed_count(Self) -> Int
+pub fn ConformanceSuiteResult::is_ok(Self) -> Bool
+pub fn ConformanceSuiteResult::passed_count(Self) -> Int
+pub fn ConformanceSuiteResult::summary(Self) -> String
+pub fn ConformanceSuiteResult::to_lines(Self) -> Array[String]
+pub fn ConformanceSuiteResult::to_markdown(Self) -> String
+
 pub(all) struct ContentDisposition {
   disposition : String
   params : Array[(String, String)]
@@ -273,10 +433,44 @@ pub(all) struct ContentDisposition {
 pub fn ContentDisposition::param(Self, String) -> String?
 pub fn ContentDisposition::parse(String) -> Result[Self, MultipartError]
 
+pub(all) struct ContractChange {
+  impact : ContractChangeImpact
+  code : String
+  path : String
+  message : String
+} derive(Eq, @debug.Debug)
+pub fn ContractChange::to_line(Self) -> String
+
+pub(all) enum ContractChangeImpact {
+  CompatibleChange
+  ReviewChange
+  BreakingChange
+} derive(Eq, @debug.Debug)
+pub fn ContractChangeImpact::label(Self) -> String
+
+pub(all) struct ContractDiff {
+  changes : Array[ContractChange]
+} derive(Eq, @debug.Debug)
+pub fn ContractDiff::breaking_count(Self) -> Int
+pub fn ContractDiff::compatible_count(Self) -> Int
+pub fn ContractDiff::has_breaking_changes(Self) -> Bool
+pub fn ContractDiff::highest_impact(Self) -> ContractChangeImpact
+pub fn ContractDiff::is_unchanged(Self) -> Bool
+pub fn ContractDiff::review_count(Self) -> Int
+pub fn ContractDiff::summary(Self) -> String
+pub fn ContractDiff::to_lines(Self) -> Array[String]
+pub fn ContractDiff::to_markdown(Self) -> String
+
 pub(all) struct EncodedForm {
   content_type : String
   body : String
   boundary : String
+} derive(Eq, @debug.Debug)
+
+pub(all) struct EndpointConformancePlan {
+  endpoint_id : String
+  suite_name : String
+  cases : Array[UploadConformanceCase]
 } derive(Eq, @debug.Debug)
 
 pub(all) struct FieldProfile {
@@ -516,6 +710,17 @@ pub(all) struct RegressionFixtureSpec {
   file_body : String
 } derive(Eq, @debug.Debug)
 
+pub(all) struct UploadConformanceCase {
+  name : String
+  content_type : String
+  body : String
+  expectation : ConformanceExpectation
+  required_issue_codes : Array[String]
+  expected_risk : UploadRisk?
+} derive(Eq, @debug.Debug)
+pub fn UploadConformanceCase::require_issue_code(Self, String) -> Self
+pub fn UploadConformanceCase::with_expected_risk(Self, UploadRisk) -> Self
+
 pub(all) struct UploadContract {
   parse_options : ParseOptions
   schema : FormSchema
@@ -525,11 +730,31 @@ pub fn UploadContract::with_max_risk(Self, UploadRisk) -> Self
 pub fn UploadContract::with_parse_options(Self, ParseOptions) -> Self
 pub fn UploadContract::with_schema(Self, FormSchema) -> Self
 
+pub(all) struct UploadContractCatalog {
+  endpoints : Array[UploadEndpoint]
+} derive(Eq, @debug.Debug)
+pub fn UploadContractCatalog::add(Self, UploadEndpoint) -> Result[Self, CatalogError]
+pub fn UploadContractCatalog::endpoint_count(Self) -> Int
+pub fn UploadContractCatalog::find_by_id(Self, String) -> UploadEndpoint?
+pub fn UploadContractCatalog::find_route(Self, String, String) -> UploadEndpoint?
+pub fn UploadContractCatalog::inspect_route(Self, String, String, MultipartRequest) -> Result[CatalogInspection, CatalogInspectionError]
+pub fn UploadContractCatalog::to_lines(Self) -> Array[String]
+
 pub(all) enum UploadDecision {
   UploadAccepted
   UploadRejected
 } derive(Eq, @debug.Debug)
 pub fn UploadDecision::label(Self) -> String
+
+pub(all) struct UploadEndpoint {
+  id : String
+  http_method : String
+  path : String
+  version : String
+  contract : UploadContract
+} derive(Eq, @debug.Debug)
+pub fn UploadEndpoint::label(Self) -> String
+pub fn UploadEndpoint::route_key(Self) -> String
 
 pub(all) struct UploadInspection {
   form : MultipartForm

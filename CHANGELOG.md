@@ -10,5 +10,9 @@
 - Add declarative schema validation for named fields and files.
 - Add request wrappers, debug reports, form analysis, risk notes, and regression fixtures.
 - Add `UploadContract` and `UploadInspection` for endpoint schema, risk threshold, decision, and deterministic reporting.
-- Add 81 tests, including upload contract acceptance, rejection, parser limit, and risk threshold coverage.
-- Add CLI example, minimal example, README, API docs, testing docs, design docs, ecosystem comparison, CI, and Markdown project proposal.
+- Add upload contract compatibility analysis with breaking-change classification and Markdown reports.
+- Add batch conformance suites for expected decisions, schema issue codes, and risk levels.
+- Add a versioned multi-endpoint contract catalog and conformance matrix.
+- Add serializable behavior baselines with regression and issue-code drift detection.
+- Add 112 tests covering parser, encoder, security, contracts, evolution, conformance, catalog, and baseline behavior.
+- Add CLI, basic, and governance examples plus README, API, testing, design, ecosystem, CI, and Markdown proposal material.
