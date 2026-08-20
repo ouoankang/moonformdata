@@ -2,46 +2,33 @@
 
 ## 基本信息
 
-项目名称：MoonFormData：MoonBit 原生 multipart/form-data 表单解析与生成库
-
-参赛者：安康
-
-联系方式：15633022302
-
-GitHub 仓库链接：https://github.com/ouoankang/moonformdata
-
-项目方向：MoonBit HTTP 表单处理基础库 / Web 与 API 工具链基础设施
-
-是否为移植项目：否
+- 项目名称：MoonFormData：MoonBit 原生 multipart/form-data 表单解析与生成库
+- 申报人：安康
+- 联系方式：15633022302
+- GitHub 仓库：https://github.com/ouoankang/moonformdata
+- Mooncakes 包：`ouoankang/moonformdata`，版本 `0.1.0`
+- 项目性质：原创 MoonBit 开源项目
 
 ## 项目简介
 
-MoonFormData 计划在 MoonBit 生态中提供一套可复用的 multipart/form-data 表单处理能力，主要面向文件上传、Webhook、API 测试、HTTP 客户端、轻量网关和 Web 框架集成等场景。项目重点解决 MoonBit 项目中处理 multipart 请求体时缺少独立基础库的问题，使开发者可以直接解析表单字段和上传文件，也可以生成符合常见 HTTP 使用方式的 multipart 请求体。
+MoonFormData 使用 MoonBit 实现 multipart/form-data 内存解析、请求体生成、命名字段与文件 Schema、文件名安全治理、风险分析和上传契约验收。项目把完整请求体转换为有序表单模型，并统一输出接受/拒绝决策、校验原因和稳定诊断报告。
 
-本项目不实现完整 HTTP server，也不绑定具体 Web 框架，而是专注于 multipart/form-data 格式本身，作为上层 MoonBit 网络库、工具库和应用项目可以复用的基础组件。
+## 项目方向与适用场景
 
-## 核心功能范围
+项目属于 MoonBit HTTP 表单处理与 API 质量工具，适用于文件上传端点、Webhook、轻量网关、HTTP 客户端、API 回归测试和 Web 框架集成。项目不实现完整 HTTP server、流式大文件传输、嵌套 multipart 或存储适配器，功能边界集中在已获取请求体的结构化验收与诊断。
 
-提供 Content-Type 中 boundary 参数的解析与校验能力；
+## 已实现的核心功能
 
-支持 multipart/form-data body 的解析，保留普通字段、文件字段、part headers、filename、content type 和原始 part 顺序；
+- 已实现 `Content-Type` boundary、`Content-Disposition`、part headers、`filename` 和 `filename*` 解析；
+- 已支持普通字段、重复字段、同名多文件、空文件、自定义 header、CRLF 和 LF-only 请求体；
+- 已实现 multipart encoder、Builder、字段/文件查询和结构化错误模型；
+- 已实现路径分隔符、盘符、控制字符、危险扩展名和长度限制等文件名安全策略；
+- 已实现 `ValidationPolicy`、`FormSchema`、`UploadContract` 和 `UploadInspection`，支持必填项、数量、大小、类型、扩展名、未知项和风险阈值校验；
+- 已提供 84 组回归 fixture、81 个测试、两个可运行示例、默认/JS 双目标检查和 GitHub Actions CI；
+- 已提供 README、API、设计、测试、生态差异、提交身份和验收说明。
 
-支持普通字段、重复字段、同名多文件、空文件和自定义 part header 等常见表单场景；
+## 原创与生态差异
 
-提供 multipart body 生成功能，方便 HTTP 客户端、Webhook 调试和 API 测试构造请求体；
+项目为独立原创实现，不是移植项目。Mooncakes 现有 `GCodinggo/moon-multipart` 和 `Songyz002/moon-multipart` 的公开定位侧重 RFC 7578 字节流解析与 writer；MoonFormData 侧重应用层命名 Schema、未知项策略、风险阈值、上传验收决策和稳定诊断报告。项目与上述包不存在代码、fixture、依赖或移植关系。
 
-提供安全文件名处理，避免直接使用带路径、盘符、控制字符或危险扩展名的客户端文件名；
-
-提供字段查询、文件查询、必填字段读取、表单摘要、错误信息格式化和调试输出；
-
-提供 ValidationPolicy 和 FormSchema，用于检查必填字段、必填文件、文件类型、大小限制、重复字段和未知字段；
-
-提供 README 示例、可运行 examples、测试用例和 GitHub Actions CI，便于项目验收和后续维护。
-
-## 原创或参考说明
-
-本项目为原创 MoonBit 开源项目，不是移植项目。项目不会直接复制或移植其他语言生态中的 multipart/form-data 库代码。
-
-项目实现会参考 multipart/form-data 和 HTTP 表单处理相关公开规范与通用行为，包括 RFC 7578、RFC 2046、RFC 2183、RFC 5987 等。上述资料仅作为协议格式和行为边界参考，不作为代码来源。
-
-本项目采用 Apache-2.0 开源许可证。项目中使用的测试数据和示例数据均为自行构造，不包含私有代码、闭源代码或来源不明内容。
+实现仅以 RFC 7578、RFC 2046 和 RFC 8187 等公开协议作为格式与行为边界。测试数据与示例均为项目自有合成内容，项目采用 OSI 认可的 Apache-2.0 许可证。

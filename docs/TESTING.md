@@ -5,14 +5,16 @@ This project is designed so review commands can be reproduced from a fresh check
 ## Required Commands
 
 ```bash
-moon check
+moon fmt --check
+moon check --deny-warn
 moon build
-moon test
+moon test --deny-warn
 moon check --target js
 moon build --target js
 moon test --target js
 moon run cmd/main
 moon run examples/basic
+moon info
 moon package --list
 moon publish --dry-run
 ```
@@ -32,6 +34,7 @@ moon publish --dry-run
 | Validation policy | `advanced_test.mbt`, `corpus_test.mbt` |
 | Declarative schema validation | `schema_test.mbt` |
 | Analysis and reporting helpers | `analysis_test.mbt` |
+| Upload contracts and acceptance decisions | `contract_test.mbt` |
 | Whitebox helper invariants | `moonformdata_wbtest.mbt` |
 | Runnable examples | `cmd/main`, `examples/basic` |
 
@@ -41,8 +44,8 @@ moon publish --dry-run
 
 ## Test Count
 
-The current suite contains 74 tests. It covers normal paths, malformed headers, missing boundaries, repeated fields, empty files, parser limits, schema validation, helper formatting, JS target compatibility, and runnable examples.
+The current suite contains 81 tests. It covers normal paths, malformed headers, missing boundaries, repeated fields, empty files, parser limits, schema validation, upload contracts, risk thresholds, helper formatting, JS target compatibility, and runnable examples.
 
 ## CI
 
-GitHub Actions runs public checks on push, pull request, and manual dispatch. The CI job installs MoonBit, checks and builds both default and JS targets, runs tests, runs the CLI example, runs the basic example, and lists the publish package. The publish dry run is a local release command after `moon login`.
+GitHub Actions runs public checks on push, pull request, and manual dispatch. The CI job installs MoonBit, verifies formatting, runs zero-warning checks, builds both default and JS targets, runs tests and examples, verifies generated public interfaces, and lists the publish package. The publish dry run is a local release command after `moon login`.

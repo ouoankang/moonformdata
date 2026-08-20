@@ -26,6 +26,7 @@ MoonFormData is a MoonBit native library for parsing, generating, validating, an
 | Validation policy | `validation.mbt` | Required fields/files, size limits, duplicate rules, content type policy. |
 | Declarative schema | `schema.mbt` | Named field and file rules for application-facing validation. |
 | Analysis helpers | `analysis.mbt` | Field/file/header profiles, content type counts, risk notes, stable reporting lines. |
+| Upload contract | `contract.mbt` | Combines parser limits, schema validation, risk ceilings, and endpoint decisions. |
 | Recipes | `recipes.mbt` | Request wrappers and common upload/webhook flows. |
 | Fixtures | `fixtures.mbt`, `regression_corpus.mbt` | Reusable examples and regression cases. |
 
@@ -48,3 +49,7 @@ Client-provided filenames are never trusted directly. `safe_filename` removes pa
 ## Compatibility
 
 The project is implemented in MoonBit and verified on the default target and JS target. No JavaScript, Rust, Python, or C implementation is used for core multipart behavior.
+
+## Ecosystem Boundary
+
+MoonFormData uses an in-memory `String` body and targets application-facing request contracts. It does not implement byte streaming or large-file transport. Existing `moon-multipart` packages focus on RFC 7578 streaming parser/writer behavior; MoonFormData focuses on named endpoint schemas, risk analysis, acceptance decisions, and deterministic diagnostics. See [ECOSYSTEM.md](ECOSYSTEM.md).

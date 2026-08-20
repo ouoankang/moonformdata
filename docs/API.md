@@ -1,6 +1,6 @@
 # MoonFormData API
 
-MoonFormData provides an in-memory `multipart/form-data` parser, encoder, query layer, validation layer, and upload analysis helpers for MoonBit HTTP tooling.
+MoonFormData provides an in-memory `multipart/form-data` parser, encoder, query layer, validation layer, upload contract, and analysis helpers for MoonBit HTTP tooling.
 
 ## Core Types
 
@@ -16,6 +16,8 @@ MoonFormData provides an in-memory `multipart/form-data` parser, encoder, query 
 | `ValidationPolicy` | General validation policy for required fields, file limits, and duplicate rules. |
 | `FormSchema` | Declarative schema for named fields and files. |
 | `FormAnalysis` | Structured summary of fields, files, headers, content types, and risk notes. |
+| `UploadContract` | Parser limits, named form schema, and accepted risk ceiling for one endpoint. |
+| `UploadInspection` | Parsed form, validation report, analysis, and final acceptance decision. |
 
 ## Parsing
 
@@ -88,6 +90,20 @@ MoonFormData provides an in-memory `multipart/form-data` parser, encoder, query 
 | `strict_filename_policy()` | Filename policy for API upload endpoints. |
 | `image_filename_policy()` | Filename policy for image uploads. |
 | `filename_security_notes(filename)` | Human-readable normalization notes. |
+
+## Upload Contracts
+
+| API | Description |
+| --- | --- |
+| `upload_contract(schema)` | Create an endpoint contract with conservative parser limits. |
+| `UploadContract::with_parse_options(options)` | Replace request parsing limits. |
+| `UploadContract::with_max_risk(risk)` | Set the highest accepted analysis risk. |
+| `inspect_upload(content_type, body, contract)` | Parse, validate, analyze, and decide in one call. |
+| `inspect_upload_request(request, contract)` | Inspect a `MultipartRequest` wrapper. |
+| `inspect_parsed_form(form, contract)` | Inspect a form that was already parsed. |
+| `UploadInspection::decision_line()` | Stable one-line endpoint decision. |
+| `UploadInspection::rejection_reasons()` | Schema and risk reasons for a rejected request. |
+| `UploadInspection::to_lines()` | Deterministic report for logs, CI, and API tests. |
 
 ## Analysis
 

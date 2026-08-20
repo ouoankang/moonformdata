@@ -1,0 +1,588 @@
+// Generated using `moon info`, DON'T EDIT IT
+package "ouoankang/moonformdata"
+
+import {
+  "moonbitlang/core/debug",
+}
+
+// Values
+pub fn accept_upload_request(MultipartRequest, ValidationPolicy) -> Result[String, MultipartError]
+
+pub fn analyze_form(MultipartForm) -> FormAnalysis
+
+pub fn analyze_request(MultipartRequest) -> Result[FormAnalysis, MultipartError]
+
+pub fn assert_fixture_shape(MultipartFixture) -> Result[FormSummary, MultipartError]
+
+pub fn bad_request_message(MultipartError) -> String
+
+pub fn binary_file_spec(String, String, String) -> FileSpec
+
+pub fn body_size_class(Int) -> BodySizeClass
+
+pub fn boundary_from_content_type(String) -> Result[String, MultipartError]
+
+pub fn build_request_from_fields(Array[(String, String)], boundary? : String) -> Result[MultipartRequest, MultipartError]
+
+pub fn build_upload_request(Array[(String, String)], Array[FileSpec], boundary? : String) -> Result[MultipartRequest, MultipartError]
+
+pub fn collect_file_names(MultipartForm) -> Array[String]
+
+pub fn collect_text_pairs(MultipartForm) -> Array[(String, String)]
+
+pub fn count_by_name(Array[String]) -> Array[NameCount]
+
+pub fn decode_percent_ascii(String) -> Result[String, MultipartError]
+
+pub fn decode_rfc5987_value(String) -> Result[String, MultipartError]
+
+pub fn default_filename_policy() -> FilenamePolicy
+
+pub fn default_form_schema() -> FormSchema
+
+pub fn default_parse_options() -> ParseOptions
+
+pub fn default_validation_policy() -> ValidationPolicy
+
+pub fn detect_boundary_in_part_bodies(MultipartForm) -> Bool
+
+pub fn empty_file_part(String, String, content_type? : String) -> FormPart
+
+pub fn encode_fields(Array[(String, String)], boundary? : String) -> Result[EncodedForm, MultipartError]
+
+pub fn encode_fields_and_files(Array[(String, String)], Array[FileSpec], boundary? : String) -> Result[EncodedForm, MultipartError]
+
+pub fn encode_files(Array[FileSpec], boundary? : String) -> Result[EncodedForm, MultipartError]
+
+pub fn encode_multipart(Array[FormPart], boundary? : String) -> Result[EncodedForm, MultipartError]
+
+pub fn encode_rfc5987_value(String) -> String
+
+pub fn encoded_to_request(EncodedForm) -> MultipartRequest
+
+pub fn field_rule(String) -> FieldRule
+
+pub fn file_part(String, String, String, content_type? : String) -> FormPart
+
+pub fn file_rule(String) -> FileRule
+
+pub fn file_spec(String, String, String, String) -> FileSpec
+
+pub fn filename_contains_path_separator(String) -> Bool
+
+pub fn filename_extension(String) -> String?
+
+pub fn filename_from_disposition(ContentDisposition) -> String?
+
+pub fn filename_has_allowed_extension(String, Array[String]) -> Bool
+
+pub fn filename_has_control_chars(String) -> Bool
+
+pub fn filename_has_extension(String, String) -> Bool
+
+pub fn filename_looks_like_windows_drive(String) -> Bool
+
+pub fn filename_security_notes(String) -> Array[String]
+
+pub fn filename_stem(String) -> String
+
+pub fn find_name_count(Array[NameCount], String) -> Int
+
+pub fn fixture_custom_headers() -> MultipartFixture
+
+pub fn fixture_empty_file() -> MultipartFixture
+
+pub fn fixture_file_upload() -> MultipartFixture
+
+pub fn fixture_mixed_upload() -> MultipartFixture
+
+pub fn fixture_quoted_boundary() -> (String, String)
+
+pub fn fixture_simple_fields() -> MultipartFixture
+
+pub fn fixture_status_line(MultipartFixture) -> String
+
+pub fn fixture_to_request(MultipartFixture) -> MultipartRequest
+
+pub fn form_content_type_counts(MultipartForm) -> Array[NameCount]
+
+pub fn form_debug_report(MultipartForm) -> Array[String]
+
+pub fn form_name_counts(MultipartForm) -> Array[NameCount]
+
+pub fn form_schema_require_field(FormSchema, String) -> FormSchema
+
+pub fn form_schema_require_file(FormSchema, String) -> FormSchema
+
+pub fn format_content_disposition(ContentDisposition) -> String
+
+pub fn format_media_type(MediaType) -> String
+
+pub fn has_header(Array[(String, String)], String) -> Bool
+
+pub fn header_names(Array[(String, String)]) -> Array[String]
+
+pub fn image_filename_policy() -> FilenamePolicy
+
+pub fn inspect_parsed_form(MultipartForm, UploadContract) -> UploadInspection
+
+pub fn inspect_upload(String, String, UploadContract) -> Result[UploadInspection, MultipartError]
+
+pub fn inspect_upload_request(MultipartRequest, UploadContract) -> Result[UploadInspection, MultipartError]
+
+pub fn is_multipart_form_data_content_type(String) -> Bool
+
+pub fn media_type_without_params(String) -> Result[String, MultipartError]
+
+pub fn new_form_builder() -> FormBuilder
+
+pub fn normalize_header_name(String) -> String
+
+pub fn ok_request_message(MultipartForm) -> String
+
+pub fn parse_and_validate_request(String, String, ValidationPolicy) -> Result[ParseAndValidateResult, MultipartError]
+
+pub fn parse_and_validate_schema_request(String, String, FormSchema) -> Result[ParseAndValidateResult, MultipartError]
+
+pub fn parse_content_disposition_header(String) -> Result[ContentDisposition, MultipartError]
+
+pub fn parse_fixture(MultipartFixture) -> Result[MultipartForm, MultipartError]
+
+pub fn parse_media_type_header(String) -> Result[MediaType, MultipartError]
+
+pub fn parse_multipart(String, String) -> Result[MultipartForm, MultipartError]
+
+pub fn parse_multipart_request(String, String) -> Result[MultipartForm, MultipartError]
+
+pub fn parse_multipart_request_with_options(String, String, ParseOptions) -> Result[MultipartForm, MultipartError]
+
+pub fn parse_multipart_with_options(String, String, ParseOptions) -> Result[MultipartForm, MultipartError]
+
+pub fn part_add_header(FormPart, String, String) -> Result[FormPart, MultipartError]
+
+pub fn part_remove_header(FormPart, String) -> FormPart
+
+pub fn part_replace_header(FormPart, String, String) -> Result[FormPart, MultipartError]
+
+pub fn part_with_body(FormPart, String) -> FormPart
+
+pub fn part_with_content_type(FormPart, String) -> FormPart
+
+pub fn part_with_filename(FormPart, String) -> FormPart
+
+pub fn part_with_name(FormPart, String) -> FormPart
+
+pub fn part_without_content_type(FormPart) -> FormPart
+
+pub fn part_without_filename(FormPart) -> FormPart
+
+pub fn percent_encode_header_value(String) -> String
+
+pub fn quote_header_value(String) -> String
+
+pub fn regression_fixture_count() -> Int
+
+pub fn regression_fixture_from_spec(RegressionFixtureSpec) -> MultipartFixture
+
+pub fn regression_fixture_names() -> Array[String]
+
+pub fn regression_fixtures() -> Array[MultipartFixture]
+
+pub fn regression_specs() -> Array[RegressionFixtureSpec]
+
+pub fn remove_header(Array[(String, String)], String) -> Array[(String, String)]
+
+pub fn request_analysis_lines(MultipartRequest) -> Result[Array[String], MultipartError]
+
+pub fn request_boundary(MultipartRequest) -> Result[String, MultipartError]
+
+pub fn request_content_length(MultipartRequest) -> Int
+
+pub fn request_debug_report(MultipartRequest) -> Result[Array[String], MultipartError]
+
+pub fn request_has_multipart_content_type(MultipartRequest) -> Bool
+
+pub fn request_with_body(MultipartRequest, String) -> MultipartRequest
+
+pub fn request_with_content_type(MultipartRequest, String) -> MultipartRequest
+
+pub fn require_single_field(MultipartForm, String) -> Result[String, MultipartError]
+
+pub fn require_single_file(MultipartForm, String) -> Result[FormPart, MultipartError]
+
+pub fn required_field_rule(String) -> FieldRule
+
+pub fn required_file_rule(String) -> FileRule
+
+pub fn roundtrip_request(MultipartRequest) -> Result[MultipartForm, MultipartError]
+
+pub fn safe_filename(String) -> String
+
+pub fn sanitize_filename_with_policy(String, FilenamePolicy) -> String
+
+pub fn set_header(Array[(String, String)], String, String) -> Result[Array[(String, String)], MultipartError]
+
+pub fn standard_fixtures() -> Array[MultipartFixture]
+
+pub fn strict_filename_policy() -> FilenamePolicy
+
+pub fn strict_form_schema() -> FormSchema
+
+pub fn strict_validation_policy() -> ValidationPolicy
+
+pub fn text_file_spec(String, String, String) -> FileSpec
+
+pub fn text_part(String, String) -> FormPart
+
+pub fn upload_contract(FormSchema) -> UploadContract
+
+pub fn upload_risk_at_most(UploadRisk, UploadRisk) -> Bool
+
+pub fn validate_form(MultipartForm, ValidationPolicy) -> ValidationReport
+
+pub fn validate_form_schema(MultipartForm, FormSchema) -> ValidationReport
+
+pub fn validate_upload_request(MultipartRequest, ValidationPolicy) -> Result[ValidationReport, MultipartError]
+
+pub fn validation_issue(String, String, part_index? : Int, field_name? : String) -> ValidationIssue
+
+pub fn validation_policy_allow_file_type(ValidationPolicy, String) -> ValidationPolicy
+
+pub fn validation_policy_require_field(ValidationPolicy, String) -> ValidationPolicy
+
+pub fn validation_policy_require_file(ValidationPolicy, String) -> ValidationPolicy
+
+pub fn webhook_summary(String, String) -> Result[String, MultipartError]
+
+// Errors
+
+// Types and methods
+pub(all) enum BodySizeClass {
+  EmptyBody
+  TinyBody
+  SmallBody
+  MediumBody
+  LargeBody
+} derive(Eq, @debug.Debug)
+pub fn BodySizeClass::label(Self) -> String
+
+pub(all) struct ContentDisposition {
+  disposition : String
+  params : Array[(String, String)]
+} derive(Eq, @debug.Debug)
+pub fn ContentDisposition::param(Self, String) -> String?
+pub fn ContentDisposition::parse(String) -> Result[Self, MultipartError]
+
+pub(all) struct EncodedForm {
+  content_type : String
+  body : String
+  boundary : String
+} derive(Eq, @debug.Debug)
+
+pub(all) struct FieldProfile {
+  name : String
+  values : Int
+  total_length : Int
+  max_length : Int
+  empty_values : Int
+  duplicated : Bool
+  size_class : BodySizeClass
+} derive(Eq, @debug.Debug)
+pub fn FieldProfile::to_line(Self) -> String
+
+pub(all) struct FieldRule {
+  name : String
+  required : Bool
+  max_values : Int
+  max_length : Int
+  allow_empty : Bool
+} derive(Eq, @debug.Debug)
+pub fn FieldRule::with_allow_empty(Self, Bool) -> Self
+pub fn FieldRule::with_max_length(Self, Int) -> Self
+pub fn FieldRule::with_max_values(Self, Int) -> Self
+pub fn FieldRule::with_required(Self, Bool) -> Self
+
+pub(all) struct FileProfile {
+  name : String
+  filename : String
+  content_type : String
+  length : Int
+  empty : Bool
+  extension : String?
+  risk : UploadRisk
+  notes : Array[String]
+  size_class : BodySizeClass
+} derive(Eq, @debug.Debug)
+pub fn FileProfile::to_line(Self) -> String
+
+pub(all) struct FileRule {
+  name : String
+  required : Bool
+  max_files : Int
+  max_length : Int
+  allowed_content_types : Array[String]
+  allowed_extensions : Array[String]
+  allow_empty : Bool
+} derive(Eq, @debug.Debug)
+pub fn FileRule::allow_content_type(Self, String) -> Self
+pub fn FileRule::allow_extension(Self, String) -> Self
+pub fn FileRule::with_allow_empty(Self, Bool) -> Self
+pub fn FileRule::with_max_files(Self, Int) -> Self
+pub fn FileRule::with_max_length(Self, Int) -> Self
+pub fn FileRule::with_required(Self, Bool) -> Self
+
+pub(all) struct FileSpec {
+  name : String
+  filename : String
+  content_type : String
+  body : String
+} derive(Eq, @debug.Debug)
+
+pub(all) struct FilenamePolicy {
+  fallback : String
+  max_length : Int
+  allow_leading_dot : Bool
+  allow_spaces : Bool
+  allowed_extensions : Array[String]
+  blocked_extensions : Array[String]
+} derive(Eq, @debug.Debug)
+
+pub(all) struct FormAnalysis {
+  summary : FormSummary
+  fields : Array[FieldProfile]
+  files : Array[FileProfile]
+  content_types : Array[NameCount]
+  headers : Array[HeaderProfile]
+  risk : UploadRisk
+  notes : Array[String]
+} derive(Eq, @debug.Debug)
+pub fn FormAnalysis::compact_line(Self) -> String
+pub fn FormAnalysis::has_note(Self, String) -> Bool
+pub fn FormAnalysis::is_high_risk(Self) -> Bool
+pub fn FormAnalysis::is_low_risk(Self) -> Bool
+pub fn FormAnalysis::to_lines(Self) -> Array[String]
+
+pub(all) struct FormBuilder {
+  boundary : String?
+  parts : Array[FormPart]
+} derive(Eq, @debug.Debug)
+pub fn FormBuilder::add_empty_file(Self, String, String, content_type? : String) -> Self
+pub fn FormBuilder::add_field(Self, String, String) -> Self
+pub fn FormBuilder::add_file(Self, String, String, String, content_type? : String) -> Self
+pub fn FormBuilder::add_part(Self, FormPart) -> Self
+pub fn FormBuilder::build(Self) -> Result[EncodedForm, MultipartError]
+pub fn FormBuilder::build_and_parse(Self) -> Result[MultipartForm, MultipartError]
+pub fn FormBuilder::is_empty(Self) -> Bool
+pub fn FormBuilder::new() -> Self
+pub fn FormBuilder::part_count(Self) -> Int
+pub fn FormBuilder::to_parts(Self) -> Array[FormPart]
+pub fn FormBuilder::with_boundary(Self, String) -> Result[Self, MultipartError]
+
+pub(all) struct FormPart {
+  name : String
+  filename : String?
+  content_type : String?
+  headers : Array[(String, String)]
+  body : String
+} derive(Eq, @debug.Debug)
+pub fn FormPart::body_length(Self) -> Int
+pub fn FormPart::content_type_or(Self, String) -> String
+pub fn FormPart::debug_line(Self) -> String
+pub fn FormPart::disposition_header(Self) -> String
+pub fn FormPart::encoded_header_block(Self) -> Result[String, MultipartError]
+pub fn FormPart::filename_or(Self, String) -> String
+pub fn FormPart::has_header(Self, String) -> Bool
+pub fn FormPart::header(Self, String) -> String?
+pub fn FormPart::is_empty(Self) -> Bool
+pub fn FormPart::is_file(Self) -> Bool
+pub fn FormPart::is_text_field(Self) -> Bool
+pub fn FormPart::safe_filename(Self) -> String?
+
+pub(all) struct FormSchema {
+  field_rules : Array[FieldRule]
+  file_rules : Array[FileRule]
+  allow_unknown_fields : Bool
+  allow_unknown_files : Bool
+} derive(Eq, @debug.Debug)
+pub fn FormSchema::add_field_rule(Self, FieldRule) -> Self
+pub fn FormSchema::add_file_rule(Self, FileRule) -> Self
+pub fn FormSchema::with_unknown_fields(Self, Bool) -> Self
+pub fn FormSchema::with_unknown_files(Self, Bool) -> Self
+
+pub(all) struct FormSummary {
+  part_count : Int
+  field_count : Int
+  file_count : Int
+  empty_file_count : Int
+  total_body_length : Int
+  distinct_name_count : Int
+} derive(Eq, @debug.Debug)
+pub fn FormSummary::to_line(Self) -> String
+
+pub(all) struct HeaderProfile {
+  name : String
+  count : Int
+  first_value : String
+} derive(Eq, @debug.Debug)
+pub fn HeaderProfile::to_line(Self) -> String
+
+pub(all) struct MediaType {
+  typ : String
+  subtype : String
+  params : Array[(String, String)]
+} derive(Eq, @debug.Debug)
+pub fn MediaType::param(Self, String) -> String?
+pub fn MediaType::parse(String) -> Result[Self, MultipartError]
+
+pub(all) enum MultipartError {
+  MissingBoundary
+  InvalidBoundary(String)
+  InvalidHeader(String)
+  InvalidContentType(String)
+  InvalidContentDisposition(String)
+  MalformedBody(String)
+  LimitExceeded(String)
+} derive(Eq, @debug.Debug)
+pub fn MultipartError::message(Self) -> String
+
+pub(all) struct MultipartFixture {
+  name : String
+  boundary : String
+  body : String
+  expected_parts : Int
+  expected_fields : Int
+  expected_files : Int
+} derive(Eq, @debug.Debug)
+
+pub(all) struct MultipartForm {
+  boundary : String
+  parts : Array[FormPart]
+} derive(Eq, @debug.Debug)
+pub fn MultipartForm::debug_lines(Self) -> Array[String]
+pub fn MultipartForm::empty_file_count(Self) -> Int
+pub fn MultipartForm::field_count(Self) -> Int
+pub fn MultipartForm::field_names(Self) -> Array[String]
+pub fn MultipartForm::field_value(Self, String) -> String?
+pub fn MultipartForm::field_value_or(Self, String, String) -> String
+pub fn MultipartForm::field_values(Self, String) -> Array[String]
+pub fn MultipartForm::file_count(Self) -> Int
+pub fn MultipartForm::file_field_names(Self) -> Array[String]
+pub fn MultipartForm::file_parts(Self) -> Array[FormPart]
+pub fn MultipartForm::files(Self, String) -> Array[FormPart]
+pub fn MultipartForm::first_part(Self, String) -> FormPart?
+pub fn MultipartForm::has_duplicate_field(Self, String) -> Bool
+pub fn MultipartForm::has_duplicate_file_field(Self, String) -> Bool
+pub fn MultipartForm::has_field(Self, String) -> Bool
+pub fn MultipartForm::has_file(Self, String) -> Bool
+pub fn MultipartForm::is_empty(Self) -> Bool
+pub fn MultipartForm::names(Self) -> Array[String]
+pub fn MultipartForm::part_count(Self) -> Int
+pub fn MultipartForm::parts_named(Self, String) -> Array[FormPart]
+pub fn MultipartForm::require_field(Self, String) -> Result[String, MultipartError]
+pub fn MultipartForm::require_file(Self, String) -> Result[FormPart, MultipartError]
+pub fn MultipartForm::summary(Self) -> FormSummary
+pub fn MultipartForm::text_parts(Self) -> Array[FormPart]
+pub fn MultipartForm::total_body_length(Self) -> Int
+pub fn MultipartForm::validate(Self, ValidationPolicy) -> ValidationReport
+pub fn MultipartForm::validate_schema(Self, FormSchema) -> ValidationReport
+
+pub(all) struct MultipartRequest {
+  content_type : String
+  body : String
+} derive(Eq, @debug.Debug)
+
+pub(all) struct NameCount {
+  name : String
+  count : Int
+} derive(Eq, @debug.Debug)
+
+pub(all) struct ParseAndValidateResult {
+  form : MultipartForm
+  report : ValidationReport
+} derive(Eq, @debug.Debug)
+
+pub(all) struct ParseOptions {
+  max_parts : Int
+  max_headers_per_part : Int
+  max_body_length : Int
+} derive(Eq, @debug.Debug)
+
+pub(all) struct RegressionFixtureSpec {
+  label : String
+  boundary : String
+  title : String
+  tag : String
+  filename : String
+  file_body : String
+} derive(Eq, @debug.Debug)
+
+pub(all) struct UploadContract {
+  parse_options : ParseOptions
+  schema : FormSchema
+  max_risk : UploadRisk
+} derive(Eq, @debug.Debug)
+pub fn UploadContract::with_max_risk(Self, UploadRisk) -> Self
+pub fn UploadContract::with_parse_options(Self, ParseOptions) -> Self
+pub fn UploadContract::with_schema(Self, FormSchema) -> Self
+
+pub(all) enum UploadDecision {
+  UploadAccepted
+  UploadRejected
+} derive(Eq, @debug.Debug)
+pub fn UploadDecision::label(Self) -> String
+
+pub(all) struct UploadInspection {
+  form : MultipartForm
+  validation : ValidationReport
+  analysis : FormAnalysis
+  max_risk : UploadRisk
+  decision : UploadDecision
+} derive(Eq, @debug.Debug)
+pub fn UploadInspection::decision_line(Self) -> String
+pub fn UploadInspection::is_accepted(Self) -> Bool
+pub fn UploadInspection::rejection_reasons(Self) -> Array[String]
+pub fn UploadInspection::status_code(Self) -> Int
+pub fn UploadInspection::to_lines(Self) -> Array[String]
+
+pub(all) enum UploadRisk {
+  LowRisk
+  MediumRisk
+  HighRisk
+} derive(Eq, @debug.Debug)
+pub fn UploadRisk::label(Self) -> String
+
+pub(all) struct ValidationIssue {
+  code : String
+  message : String
+  part_index : Int?
+  field_name : String?
+} derive(Eq, @debug.Debug)
+pub fn ValidationIssue::to_line(Self) -> String
+
+pub(all) struct ValidationPolicy {
+  required_fields : Array[String]
+  required_files : Array[String]
+  allowed_file_content_types : Array[String]
+  max_text_length : Int
+  max_file_length : Int
+  max_filename_length : Int
+  allow_empty_files : Bool
+  allow_duplicate_fields : Bool
+  allow_duplicate_files : Bool
+} derive(Eq, @debug.Debug)
+
+pub(all) struct ValidationReport {
+  issues : Array[ValidationIssue]
+} derive(Eq, @debug.Debug)
+pub fn ValidationReport::first_message(Self) -> String?
+pub fn ValidationReport::has_issue_code(Self, String) -> Bool
+pub fn ValidationReport::is_ok(Self) -> Bool
+pub fn ValidationReport::issue_count(Self) -> Int
+pub fn ValidationReport::issues_for_field(Self, String) -> Array[ValidationIssue]
+pub fn ValidationReport::messages(Self) -> Array[String]
+pub fn ValidationReport::summary(Self) -> String
+pub fn ValidationReport::to_lines(Self) -> Array[String]
+
+// Type aliases
+
+// Traits

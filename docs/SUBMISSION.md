@@ -1,4 +1,4 @@
-# Submission Notes
+# Final Acceptance Evidence
 
 | Item | Value |
 | --- | --- |
@@ -13,11 +13,11 @@
 
 ## Scope
 
-MoonFormData implements an in-memory `multipart/form-data` parser and encoder, including boundary parsing, part header parsing, text fields, repeated fields, file uploads, empty files, filename sanitization, request builders, validation policy, declarative schema validation, analysis helpers, examples, tests, and CI.
+MoonFormData implements an in-memory `multipart/form-data` parser and encoder with application-facing upload contracts. Completed capabilities include boundary and header parsing, repeated fields, file uploads, filename sanitization, request builders, declarative schemas, risk analysis, endpoint decisions, deterministic reports, examples, tests, and CI.
 
 ## Existing Foundation
 
-The repository contains a complete MoonBit module, public package metadata, Apache-2.0 license, runnable examples, CI configuration, API documentation, testing documentation, design documentation, regression fixtures, and a one-page PDF project proposal.
+The repository contains a complete MoonBit module, public package metadata, Apache-2.0 license, runnable examples, CI configuration, API documentation, testing documentation, design documentation, ecosystem comparison, 84 regression fixtures, authorship records, and a concise Markdown proposal.
 
 ## Technical Route
 
@@ -27,6 +27,7 @@ The repository contains a complete MoonBit module, public package metadata, Apac
 | Encoding | Build deterministic multipart payloads from text and file parts, sanitize filenames, emit HTTP-ready content type. |
 | Validation | Provide general policy checks and named schema rules for upload endpoints. |
 | Safety | Normalize filenames and reject malformed headers, invalid boundaries, broken bodies, and limit violations. |
+| Contract | Combine parse limits, schema rules, and risk ceilings into one acceptance decision and report. |
 | Quality | Use blackbox tests for public behavior and whitebox tests for helper invariants. |
 
 ## Deliverables
@@ -39,20 +40,24 @@ The repository contains a complete MoonBit module, public package metadata, Apac
 | API documentation | `docs/API.md` |
 | Test documentation | `docs/TESTING.md` |
 | Design notes | `docs/DESIGN.md` |
-| Proposal PDF | `submission/MoonFormData_Project_Proposal.pdf` |
+| Markdown proposal | `submission/MoonFormData_Project_Proposal.md` |
+| Ecosystem comparison | `docs/ECOSYSTEM.md` |
+| Commit identity | `AUTHORS.md` |
 | CI | `.github/workflows/ci.yml` |
 
 ## Verification Commands
 
 ```bash
-moon check
+moon fmt --check
+moon check --deny-warn
 moon build
-moon test
+moon test --deny-warn
 moon check --target js
 moon build --target js
 moon test --target js
 moon run cmd/main
 moon run examples/basic
+moon info
 moon package --list
 moon publish --dry-run
 ```
@@ -61,4 +66,4 @@ moon publish --dry-run
 
 ## Open Source Compliance
 
-MoonFormData is an original MoonBit implementation under Apache-2.0. It does not copy or port code from a private, closed-source, or unclear source. Behavior is designed from public multipart-related specifications and common HTTP upload practices.
+MoonFormData is an original MoonBit implementation under Apache-2.0. It does not copy or port code from existing multipart packages or any private, closed-source, or unclear source. Behavior is designed from public multipart specifications and common HTTP upload practices. Synthetic fixtures and regression data are owned by this project.

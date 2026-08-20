@@ -30,6 +30,13 @@ fn main {
         )
       println("schema=" + form.validate_schema(schema).summary())
       println("analysis=" + @moonformdata.analyze_form(form).compact_line())
+      let contract = @moonformdata.upload_contract(schema).with_max_risk(
+        @moonformdata.LowRisk,
+      )
+      match @moonformdata.inspect_upload_request(request, contract) {
+        Ok(inspection) => println("contract=" + inspection.decision_line())
+        Err(err) => println("contract failed: " + err.message())
+      }
     }
     Err(err) => println("parse failed: " + err.message())
   }

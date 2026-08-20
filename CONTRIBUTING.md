@@ -7,9 +7,10 @@ MoonFormData welcomes fixes, tests, examples, and documentation improvements.
 Install MoonBit, then run:
 
 ```bash
-moon check
+moon fmt --check
+moon check --deny-warn
 moon build
-moon test
+moon test --deny-warn
 moon run examples/basic
 ```
 
@@ -26,6 +27,7 @@ moon build --target js
 moon test --target js
 moon run cmd/main
 moon run examples/basic
+moon info
 moon package --list
 moon publish --dry-run
 ```
@@ -36,12 +38,12 @@ Good contributions keep the library focused on reusable multipart behavior:
 
 - Parser correctness and edge cases.
 - Encoder interoperability.
-- Validation and schema helpers.
+- Validation, schema, and upload contract helpers.
 - Security-oriented filename handling.
 - Examples that are small and reproducible.
 - Documentation that helps users integrate the package.
 
-Large features such as streaming parsing, nested multipart support, and framework adapters should include design notes and tests because they change the public behavior surface.
+Streaming byte parsing and large-file transport are outside MoonFormData's application-contract scope. Framework adapters should remain thin and keep endpoint schema, risk analysis, and diagnostics reusable.
 
 ## License
 
