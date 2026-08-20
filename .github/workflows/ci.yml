@@ -51,5 +51,8 @@ jobs:
       - name: Run basic example
         run: moon run examples/basic
 
+      - name: Run governance example
+        run: moon run examples/governance
+
       - name: Package list
         run: moon package --list
